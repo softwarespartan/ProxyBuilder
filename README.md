@@ -23,7 +23,7 @@ frame.pack;  frame.show;
 </pre><pre class="codeoutput">
 ans =
 
-     1
+   1
 </pre><p>Register the actionListenerProxy with the button</p><pre class="codeinput">button.addActionListener(proxy);
 </pre><p>Now when you click the GUI button you should see</p><pre>"ACTION_PERFORMED,cmd=Button Text,when=1421687267051,modifiers=Button1"</pre><p>written to the command window.</p><p>Remember that the InvocationHandler is mapping the actionListener method calls to our callback.  To see this explicitly, we can look at the handler invocation mapping</p><pre class="codeinput">handler.invocationMap.get(<span class="string">'actionPerformed'</span>)
 </pre><pre class="codeoutput">
