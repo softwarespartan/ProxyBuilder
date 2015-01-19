@@ -4,66 +4,8 @@ Dynamically create java.lang.reflect.Proxy objects in Matlab for a given Java in
 <html>
     <head>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <link rel="stylesheet" type="text/css" href="README.css">
   <title>Proxy Objects in Java and Matlab</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-01-19"><meta name="DC.source" content="ProxyObjects.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
-
-html { min-height:100%; margin-bottom:1px; }
-html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
-html body td { vertical-align:top; text-align:left; }
-
-h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
-h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
-h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
-
-a { color:#005fce; text-decoration:none; }
-a:hover { color:#005fce; text-decoration:underline; }
-a:visited { color:#004aa0; text-decoration:none; }
-
-p { padding:0px; margin:0px 0px 20px; }
-img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
-
-ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
-ul li { padding:0px; margin:0px 0px 7px 0px; }
-ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
-ul li ol li { list-style:decimal; }
-ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
-ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
-ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
-ol li ol li { list-style-type:lower-alpha; }
-ol li ul { padding-top:7px; }
-ol li ul li { list-style:square; }
-
-.content { font-size:1.2em; line-height:140%; padding: 20px; }
-
-pre, code { font-size:12px; }
-tt { font-size: 1.2em; }
-pre { margin:0px 0px 20px; }
-pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
-pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
-pre.error { color:red; }
-
-@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
-
-span.keyword { color:#0000FF }
-span.comment { color:#228B22 }
-span.string { color:#A020F0 }
-span.untermstring { color:#B20000 }
-span.syscmd { color:#B28C00 }
-
-.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
-.footer p { margin:0px; }
-.footer a { color:#878787; }
-.footer a:hover { color:#878787; text-decoration:underline; }
-.footer a:visited { color:#878787; }
-
-table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
-table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
-
-
-
-
-
   </style></head><body><div class="content"><h1>Proxy Objects in Java and Matlab</h1><p>Dynamically create java.lang.reflect.Proxy objects in Matlab for a given Java interface</p><h2>Contents</h2><div><ul><li><a href="#1">What are Proxy Objects?</a></li><li><a href="#2">Configuring ProxyBuilder</a></li><li><a href="#5">ActionListener Example</a></li></ul></div><h2>What are Proxy Objects?<a name="1"></a></h2><p>Given a Java Interface, a <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Proxy.html">java.lang.reflect.Proxy</a> can be created at runtime which implements that Interface and associated methods. A dynamic proxy class (simply referred to as a proxy class) is a class that implements a list of interfaces specified at runtime when the class is created. A proxy instance is an instance of a proxy class. Each proxy instance has an associated invocation handler object, which implements the interface <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/reflect/InvocationHandler.html">InvocationHandler</a>. A method invocation on a proxy instance through one of its proxy interfaces will be dispatched to the invoke method of the instance's invocation handler, passing the proxy instance, a <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/reflect/Method.html">java.lang.reflect.Method</a> object identifying the method that was invoked, and an array of type Object containing the arguments. The invocation handler processes the encoded method invocation as appropriate and the result that it returns will be returned as the result of the method invocation on the proxy instance.</p><p>A proxy instance has the following properties:</p><div><ul><li>Given a proxy instance proxy and one of the interfaces implemented by its proxy class Foo, the following expression will return true: <i>proxy</i> <i>instanceof</i> <i>Foo</i></li><li>Each proxy instance has an associated invocation handler, the one that was passed to its constructor. The static Proxy.getInvocationHandler method will return the invocation handler associated with the proxy instance passed as its argument.</li></ul></div><p>So what does all this mean?  It means that using Proxys, it is possible to dynamically define</p><div><ul><li><a href="http://docs.oracle.com/javase/8/docs/api/java/awt/event/ActionListener.html">ActionListener</a></li><li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/EventListener.html">EventListener</a></li><li><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html">Runnable</a></li><li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Callable.html">Callable</a></li><li><a href="http://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html">Stream Functions</a> (Consumer&lt;T&gt;, Supplier&lt;T&gt;, Function&lt;T,R&gt;)</li></ul></div><p>and much more within Matlab without having to manage custom Java code.  ProxyBuilder makes it easy to create proxy objects and bind Matlab callbacks within the invocation handler.</p><h2>Configuring ProxyBuilder<a name="2"></a></h2><p>First make sure that the absolute path to the ProxyBuilder.jar has been added to your Matlab classpath.txt (static) or added using javaaddpath('/your/path/ProxyBuilder.jar') which adds the jar file dynamically.</p><p>Suppose you've unziped the ProxyBuilder source code to ~/Dropbox/src/ProxyBuilder</p><pre class="codeinput">cd <span class="string">~/Dropbox/src/ProxyBuilder</span>
 </pre><p>Get the dynamic java class path</p><pre class="codeinput">dynpath = javaclasspath(<span class="string">'-dynamic'</span>);
 </pre><p>Now add the jar file to the dynamic java class path</p><pre class="codeinput"><span class="keyword">if</span> isempty(dynpath) || isempty(regexp(dynpath{1},<span class="string">'ProxyBuilder.jar'</span>));
